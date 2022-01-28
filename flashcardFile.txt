@@ -1,0 +1,22 @@
+*********************************
+*	This is my test file	*
+*********************************
+
+lang1: I am a cat
+lang2: Je suis un chat
+score1-2: 1😀 0🙂 0😐 0🙁 4😖
+score2-1: 0😀 0🙂 0😐 0🙁 0😖
+
+lang1: I (fem) am a stranger in the city, and I don't speak french
+lang2: Je suis étrangère dans la ville, et je ne parle pas français  
+score1-2: 0😀 0🙂 0😐 0🙁 0😖
+score2-1: 0😀 0🙂 0😐 0🙁 0😖
+
+lang1: generally, usually, normally
+lang2: généralement, d'habitude, normalement
+
+lang1: I don't always arrive late
+lang2: Je n'arrive pas toujour en retard
+
+lang1: My computer just turned back on
+lang2: Mon ordinateur vient de se rallumer
