@@ -19,5 +19,5 @@ SCORE_AVERAGE_INDICATOR = "😐";
 SCORE_BAD_INDICATOR = "🙁";
 SCORE_TERRIBLE_INDICATOR = "😖";
 
-DEFAULT_LANG1 = "english"
-DEFAULT_LANG2 = "french"
+DEFAULT_LANG1 = "Google UK English Female"
+DEFAULT_LANG2 = "Google français"
