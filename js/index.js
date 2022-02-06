@@ -2,9 +2,14 @@ document.addEventListener('DOMContentLoaded', function (e) {
     let dataManager = createDataManager();
     let speaker;
 
+    const NEW_CARD = 0;
+    const PROMPT = 1;
+    const RESPONSE = 2;
+
     let isPlaying = false;
     let currCardData;
     let currCard;
+    let nextAction = NEW_CARD
 
     function init() {
         if (!window.speechSynthesis) {
@@ -32,9 +37,19 @@ document.addEventListener('DOMContentLoaded', function (e) {
             return;
         }
 
-        if(lastAction.type == SPEAKING_AND_SHOWING_RESPONSE) {
+        if(nextAction == NEW_CARD) {
             // get a new card
-            getNewCard();
+            currCardData = dataManager.getRandomFlashCard();
+            currCard = createCard(currCardData);
+    
+            $("#cards-div").append(currCard);
+            
+            if($("#cards-div").children().length > 10) {
+                $("#cards-div").children().first().remove();
+            }
+
+            nextAction = PROMPT;
+
             next()
         } else if(nextAction == PROMPT) {
             let promptText = currCardData.is12? currCardData.card.lang1 : currCardData.card.lang2;
@@ -70,17 +85,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 .then(() => next());
 
             nextAction = NEW_CARD;
-        }
-    }
-
-    function getNewCard() {
-        currCardData = dataManager.getRandomFlashCard();
-        currCard = createCard(currCardData);
-
-        $("#cards-div").append(currCard);
-        
-        if($("#cards-div").children().length > 10) {
-            $("#cards-div").children().first().remove();
         }
     }
 
@@ -177,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
         $("#play-pause-button").on("click", () => {
             if(isPlaying) {
                 isPlaying = false;
-                if(currentAction) currentAction.interupt();
                 $("#play-pause-button-pause").hide();
                 $("#play-pause-button-play").show();
             } else {
@@ -204,15 +207,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
         dataManager.incrementScore(cardId, scoreIndex, is12);
     }
 
+
     init()
 });
-
-function Action() {
-    this.isInterupted = false;
-    this.interupt = function() {
-
-    }
-    this.complete = function() {
-
-    }
-}
