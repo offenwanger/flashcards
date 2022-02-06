@@ -10,38 +10,35 @@ let createSpeaker = function (lang1uri, lang2uri) {
     };
 
     function speakLang1(text) {
-        return new Promise((resolve, reject) =>  {
-            stopSpeaking();
-    
-            if(!lang1) {
-                reject("lang1 not initialized");
-                return;
-            }
-            
-            let utterance = new SpeechSynthesisUtterance();
-            utterance.voice = lang1;
-            utterance.lang = utterance.voice.lang;
-            utterance.text = text;
-            utterance.onend = function() {resolve()};
-
-            speechSynthesis.speak(utterance);
-        });
+        if(!lang1) return Promise.reject("lang1 not initialized");
+        return speak(text, lang1, true);
     }
 
     function speakLang2(text) {
+        if(!lang2) return Promise.reject("Lang2 not initialized");
+        return speak(text, lang2, true);
+    }
+    
+    function waitForSpeechLengthLang1(text) {
+        if(!lang1) return Promise.reject("lang1 not initialized");
+        return speak(text, lang1, false);
+    }
+
+    function waitForSpeechLengthLang2(text) {
+        if(!lang2) return Promise.reject("Lang2 not initialized");
+        return speak(text, lang2, false);
+    }
+
+    function speak(text, lang, outloud) {
         return new Promise((resolve, reject) =>  {
             stopSpeaking();
-    
-            if(!lang2) {
-                reject("Lang2 not initialized");
-                return;
-            }
-
+            
             let utterance = new SpeechSynthesisUtterance();
-            utterance.voice = lang2;
+            utterance.voice = lang;
             utterance.lang = utterance.voice.lang;
             utterance.text = text;
             utterance.onend = function() {resolve()};
+            utterance.volume = outloud? 1:0;
 
             speechSynthesis.speak(utterance);
         });
@@ -83,6 +80,8 @@ let createSpeaker = function (lang1uri, lang2uri) {
         setLang2,
         speakLang1,
         speakLang2,
+        waitForSpeechLengthLang1,
+        waitForSpeechLengthLang2,
         stopSpeaking,
         getVoices,
     }

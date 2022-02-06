@@ -50,7 +50,6 @@ let createDataManager = function() {
         })
 
         flashcards = getAllCards();
-        
     }
 
     function getLang1() {
@@ -77,15 +76,26 @@ let createDataManager = function() {
             }
         }
 
-        let flashcards = []
+        let cards = []
         cardKeys.forEach(cardKey => {
-            flashcards.push(JSON.parse(localStorage.getItem(cardKey)));
+            cards.push(JSON.parse(localStorage.getItem(cardKey)));
         });
+        return cards
     }
     
     function incrementScore(cardId, scoreIndex, is12) {
+        if(typeof scoreIndex != 'number' || scoreIndex % 1 !== 0 || scoreIndex < 0 || scoreIndex > 4) {console.error("Bad Index! "+scoreIndex);return;}
+        
         let card = flashcards.find(card => card.id == cardId)
         is12? card.score12[scoreIndex]++ : card.score21[scoreIndex]++;
+        setCard(card);
+    }
+
+    function decrementScore(cardId, scoreIndex, is12) {
+        if(typeof scoreIndex != 'number' || scoreIndex % 1 !== 0 || scoreIndex < 0 || scoreIndex > 4) {console.error("Bad Index! "+scoreIndex);return;}
+
+        let card = flashcards.find(card => card.id == cardId)
+        is12? card.score12[scoreIndex]-- : card.score21[scoreIndex]--;
         setCard(card);
     }
 
@@ -96,10 +106,18 @@ let createDataManager = function() {
     function getRandomFlashCard() {
         //skew this by score.
 
-        let card = flashcards[Random.getInt(falshcards.length)];
-        let is12 = Random.getBool();
+        let card = flashcards[getRandomInt(flashcards.length)];
+        let is12 = getRandomBool();
 
         return {card, is12}
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function getRandomBool() {
+        return Math.random() < 0.5;
     }
 
     /**
@@ -270,6 +288,7 @@ let createDataManager = function() {
         parseTxtFile,
         getRandomFlashCard,
         incrementScore,
+        decrementScore,
 
         clearData
     }

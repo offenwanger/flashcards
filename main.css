@@ -11,6 +11,10 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+.dialog select {
+    max-width:90%;
+}
+
 /* Dialog content */
 .dialog-content {
     background-color: #fefefe;
@@ -33,4 +37,106 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.button-div {
+    display: inline-block;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.selected {
+    background-color: lightgreen;
+}
+
+#header {
+    position:absolute; 
+    top:0px; 
+    left:0px; 
+    height:60px; 
+    right:0px;
+    overflow:hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#cards-div {
+    position:absolute; 
+    top:60px; 
+    bottom:60px; 
+    left:0px; 
+    right:0px; 
+    overflow:auto;
+}
+
+.card {
+    border: 1px solid transparent;
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.card .feedback-button {
+    width:35px;
+    height:30px;
+    font-size: 20px;
+    margin: 2px;
+    text-align: center;
+}
+
+#controls-div {
+    position:absolute; 
+    bottom:0px; 
+    height:60px; 
+    left:0px; 
+    right:0px; 
+    overflow:hidden;
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#controls-div .button-div {
+    margin-right: -2px;
+    height: 100%;
+    float: left;
+}
+
+#controls-div i {
+    font-size : 40px;
+    margin-top: 10px;
+}
+
+#play-pause-button {
+    width: 70%;
+}
+
+#repeat-button {
+    width: 30%;
+}
+
+#settings-button {
+    font-size : 40px;
+    margin: 10px;
+    float: right;
 }
