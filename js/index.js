@@ -141,6 +141,21 @@ document.addEventListener('DOMContentLoaded', function (e) {
         });
 
         $("#play-pause-button-pause").hide();
+
+        $("#download-flashcards").on("click", () => {
+            let text = dataManager.getTxtFile();
+
+            let a = document.createElement('a');
+            a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            a.setAttribute('download', 'flashcardFile.txt');
+          
+            a.style.display = 'none';
+            document.body.appendChild(a);
+          
+            a.click();
+          
+            document.body.removeChild(a);
+        });
     }
 
     function CallbackWrapper(callbackFunc) {

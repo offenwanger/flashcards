@@ -140,3 +140,11 @@
     margin: 10px;
     float: right;
 }
+
+#download-flashcards {
+    width: 100%;
+}
+
+#upload-flashcards {
+    width: 100%;
+}

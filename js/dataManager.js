@@ -87,7 +87,7 @@ let createDataManager = function() {
         if(typeof scoreIndex != 'number' || scoreIndex % 1 !== 0 || scoreIndex < 0 || scoreIndex > 4) {console.error("Bad Index! "+scoreIndex);return;}
         
         let card = flashcards.find(card => card.id == cardId)
-        is12? card.score12[scoreIndex]++ : card.score21[scoreIndex]++;
+        is12? card.score12.scores[scoreIndex]++ : card.score21.scores[scoreIndex]++;
         setCard(card);
     }
 
@@ -95,7 +95,7 @@ let createDataManager = function() {
         if(typeof scoreIndex != 'number' || scoreIndex % 1 !== 0 || scoreIndex < 0 || scoreIndex > 4) {console.error("Bad Index! "+scoreIndex);return;}
 
         let card = flashcards.find(card => card.id == cardId)
-        is12? card.score12[scoreIndex]-- : card.score21[scoreIndex]--;
+        is12? card.score12.scores[scoreIndex]-- : card.score21.scores[scoreIndex]--;
         setCard(card);
     }
 
@@ -126,7 +126,7 @@ let createDataManager = function() {
     function getTxtFile() {
         let textStr = "" + TEXT_FILE_HEADER;
         
-        flashcards.array.forEach(card => {
+        flashcards.forEach(card => {
             textStr += LANG1_TAG +": "+card.lang1+"\n";
             textStr += LANG2_TAG +": "+card.lang2+"\n";
             textStr += SCORE_LANG1_TO_LANG2_TAG +": "+scoreToString(card.score12)+"\n";
@@ -226,14 +226,16 @@ let createDataManager = function() {
 
         return str;
     }
-
     
     function scoreToString(score) {
-        return score.great+SCORE_GREAT_INDICATOR + " " +
-            score.good+SCORE_GOOD_INDICATOR + " " +
-            score.average+SCORE_AVERAGE_INDICATOR + " " +
-            score.bad+SCORE_BAD_INDICATOR + " " +
-            score.terrible+SCORE_TERRIBLE_INDICATOR;
+        let indicators = [SCORE_GREAT_INDICATOR, SCORE_GOOD_INDICATOR, SCORE_AVERAGE_INDICATOR, SCORE_BAD_INDICATOR, SCORE_TERRIBLE_INDICATOR]
+
+        let str = "";
+        for(let i = 0; i< indicators.length;i++) {
+            str += score.scores[i] + indicators[i] + " ";
+        }
+        
+        return str.trim();
     }
 
     function parseScoreFromString(str) {
