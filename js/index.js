@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
     let dataManager = createDataManager();
     let speaker;
 
-    let isPlaying = false;
     let currPrompt;
-    let currCallback;
 
     function init() {
         if (!window.speechSynthesis) {
@@ -27,8 +25,11 @@ document.addEventListener('DOMContentLoaded', function (e) {
         setEventHandlers();
     }
 
-    function next() {
+    function nextClicked() {
+        speaker.stopSpeaking();
+
         if (!currPrompt || !currPrompt.responseHidden()) {
+            // if we're on the first prompt or the response is showing, get a new card. 
             // get a new card
             currPrompt = new PromptCardWrapper(dataManager.getRandomFlashCard(), speaker, dataManager);
 
@@ -38,52 +39,30 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 $("#cards-div").children().first().remove();
             }
 
-            next();
+            $("#cards-div").animate({
+                scrollTop: $('#cards-div')[0].scrollHeight
+            }, 1000);
+
+            currPrompt.speakPrompt();
         } else if (currPrompt.promptHidden()) {
-            let waitResponseCallback = new CallbackWrapper(() => { next() });
-
-            let waitPromptCallback = new CallbackWrapper(() => {
-                currCallback = waitResponseCallback;
-                currPrompt.showPrompt();
-                currPrompt.waitResponse(waitResponseCallback);
-            })
-
-            let promptCallback = new CallbackWrapper(() => {
-                currCallback = waitPromptCallback;
-                currPrompt.waitPrompt(waitPromptCallback);
-            });
-
-            currCallback = promptCallback;
-            currPrompt.speakPrompt(promptCallback);
+            // if the prompt is not showing, show the prompt. 
+            currPrompt.showPrompt();
         } else if (currPrompt.responseHidden()) {
-            let wait3SecondsCallback = new CallbackWrapper(() => { next() });
-
-            let responseCallback = new CallbackWrapper(() => {
-                currPrompt.showResponse()
-
-                currCallback = wait3SecondsCallback;
-                setTimeout(() => { wait3SecondsCallback.call() }, 3000)
-            });
-
-            currCallback = responseCallback
-            currPrompt.speakResponse(responseCallback);
+            currPrompt.showResponse();
+            currPrompt.speakResponse();
         }
     }
-
-    function pauseClicked() {
-        if (currCallback) currCallback.cancel();
+    
+    function repeatClicked() {
         speaker.stopSpeaking();
 
-        if (currPrompt) {
-            if (currPrompt.promptHidden()) currPrompt.showPrompt();
-            else if (currPrompt.responseHidden()) currPrompt.showResponse();
+        if(currPrompt) {
+            if (currPrompt.responseHidden()) {
+                currPrompt.speakPrompt();
+            } else {
+                currPrompt.speakResponse();
+            }
         }
-    }
-
-    function playClicked() {
-        if (currCallback) currCallback.cancel();
-        speaker.stopSpeaking();
-        next();
     }
 
     function showSettings() {
@@ -126,18 +105,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
             dataManager.setLang2($("#lang2-select").val())
         });
 
-        $("#play-pause-button").on("click", () => {
-            if (isPlaying) {
-                isPlaying = false;
-                $("#play-pause-button-pause").hide();
-                $("#play-pause-button-play").show();
-                pauseClicked()
-            } else {
-                isPlaying = true;
-                $("#play-pause-button-play").hide();
-                $("#play-pause-button-pause").show();
-                playClicked();
-            }
+        $("#next-button").on("click", () => {
+            nextClicked();
+        });
+
+        $("#repeat-button").on("click", () => {
+            repeatClicked();
         });
 
         $("#play-pause-button-pause").hide();
@@ -158,38 +131,21 @@ document.addEventListener('DOMContentLoaded', function (e) {
         });
     }
 
-    function CallbackWrapper(callbackFunc) {
-        this.cancelled = false;
-        this.call = function () { if (!this.cancelled) callbackFunc(); };
-        this.cancel = function () { this.cancelled = true; }
-    }
-
     function PromptCardWrapper(cardData, speaker, dataManager) {
         this.scoreIndex = -1;
 
         this.promptText = cardData.is12 ? cardData.card.lang1 : cardData.card.lang2;
         this.responseText = cardData.is12 ? cardData.card.lang2 : cardData.card.lang1;
 
-        this.speakPrompt = function (callback) {
+        this.speakPrompt = function () {
             let speakFunc = cardData.is12 ? speaker.speakLang1 : speaker.speakLang2;
-            speakFunc(this.promptText).then(() => { callback.call(); });
+            speakFunc(this.promptText);
         }
 
-        this.speakResponse = function (callback) {
+        this.speakResponse = function () {
             let speakFunc = cardData.is12 ? speaker.speakLang2 : speaker.speakLang1;
-            speakFunc(this.responseText).then(() => { callback.call(); });
+            speakFunc(this.responseText);
         }
-
-        this.waitPrompt = function (callback) {
-            let waitFunc = cardData.is12 ? speaker.waitForSpeechLengthLang1 : speaker.waitForSpeechLengthLang2;
-            waitFunc(this.promptText).then(() => { callback.call(); });
-        };
-
-        this.waitResponse = function (callback) {
-            let waitFunc = cardData.is12 ? speaker.waitForSpeechLengthLang2 : speaker.waitForSpeechLengthLang1;
-            waitFunc(this.responseText).then(() => { callback.call(); });
-        };
-
 
         this.promptHidden = function () {
             let prompt = this.element.find(".card-prompt").first();

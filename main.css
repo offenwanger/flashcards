@@ -39,6 +39,14 @@
     cursor: pointer;
 }
 
+#download-flashcards {
+    width: 100%;
+}
+
+#upload-flashcards {
+    width: 100%;
+}
+
 .button-div {
     display: inline-block;
     margin-bottom: 0;
@@ -77,6 +85,16 @@
     overflow:hidden;
     background-color: rgba(0, 0, 0, 0.4);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#logo {
+    
+}
+
+#settings-button {
+    font-size : 40px;
+    margin: 10px;
+    float: right;
 }
 
 #cards-div {
@@ -127,24 +145,10 @@
     margin-top: 10px;
 }
 
-#play-pause-button {
+#next-button {
     width: 70%;
 }
 
 #repeat-button {
     width: 30%;
-}
-
-#settings-button {
-    font-size : 40px;
-    margin: 10px;
-    float: right;
-}
-
-#download-flashcards {
-    width: 100%;
-}
-
-#upload-flashcards {
-    width: 100%;
 }
