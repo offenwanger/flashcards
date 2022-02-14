@@ -1,3 +1,7 @@
+body {
+    font-family: Arial;
+}
+
 /* Dialog container and background */
 .dialog {
     display: none;
@@ -88,7 +92,12 @@
 }
 
 #logo {
-    
+    height: 60px;
+    float: left;
+}
+
+#app-title {
+    height: 60px;
 }
 
 #settings-button {
@@ -115,9 +124,10 @@
 }
 
 .card .feedback-button {
-    width:35px;
-    height:30px;
-    font-size: 20px;
+    width:65px;
+    height:60px;
+    font-size: 40px;
+    padding-top: 5px;
     margin: 2px;
     text-align: center;
 }

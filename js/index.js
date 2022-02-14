@@ -92,6 +92,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function setEventHandlers() {
+        $("#logo").on("click", function () { location.href = 'https://offenwanger.ca'; })
+        $("#app-title").on("click", function () { location.href = 'https://offenwanger.ca'; })
+
         $("#settings-button").on("click", function () { showSettings() })
         $("#close-settings-menu-button").on("click", function () { closeSettings(); })
 
