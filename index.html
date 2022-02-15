@@ -29,15 +29,30 @@
 
     <div id="settings-menu" class="dialog">
         <div id="settings-menu-modal" class="dialog-content">
-            <span class="dialog-close" id="close-settings-menu-button">&times;</span>
+            <span id="close-settings-menu-button" class="dialog-close">&times;</span>
 
             <label for="lang1-select">lang1: </label><select id="lang1-select"></select>
             <br><br>
             <label for="lang2-select">lang2: </label><select id="lang2-select"></select>
             <br><br>
+            <div class="button-div" id="view-flashcards">View Flashcards</div>
+            <br><br>
+            <div class="button-div" id="add-flashcards">Add Flashcards</div>
+            <br><br>
             <div class="button-div" id="download-flashcards">Download Flashcards</div>
             <br><br>
-            <div class="button-div" id="upload-flashcards">Upload Flashcards</div>
+            <label>
+                <div class="button-div" id="upload-flashcards">Upload Flashcards</div>
+                <input id="upload-data-input" style="display:none" type="file"/>
+            </label>
+        </div>
+    </div>
+
+    <div id="flashcard-display" class="dialog">
+        <div id="flashcard-display-modal" class="dialog-content">
+            <span id="close-flashcard-display-button" class="dialog-close">&times;</span>
+
+            <div id="cards-display-div"></div>
         </div>
     </div>
 </body>

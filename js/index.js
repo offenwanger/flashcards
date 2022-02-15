@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         if (!currPrompt || !currPrompt.responseHidden()) {
             // if we're on the first prompt or the response is showing, get a new card. 
             // get a new card
-            currPrompt = new PromptCardWrapper(dataManager.getRandomFlashCard(), speaker, dataManager);
+            currPrompt = new PromptCardWrapper(dataManager.getRandomFlashcard(), speaker, dataManager);
 
             $("#cards-div").append(currPrompt.element);
 
@@ -87,8 +87,60 @@ document.addEventListener('DOMContentLoaded', function (e) {
         $("#settings-menu").show();
     }
 
-    function closeSettings() {
+    function hideSettings() {
         $("#settings-menu").hide();
+    }
+
+    function fileUploaded(event) {
+        var input = event.target;
+
+        var reader = new FileReader();
+        reader.onerror = function(event) {
+            alert("Failed to read file!\n\n" + reader.error);
+        };
+        reader.onload = function(){
+          let text = reader.result;
+          let result = dataManager.parseTxtFile(text);
+          console.log(result);
+        };
+        reader.readAsText(input.files[0]);
+    }
+
+    function showFlashcards(flashcardData) {
+        let cardDisplay = $("#cards-display-div")
+        cardDisplay.empty();
+
+        flashcardData.forEach(flashcard=> {
+            let card = createFlashcardCardDisplay(flashcard);
+            cardDisplay.append(card);
+        });
+
+        $("#flashcard-display").show();
+    }
+    
+    function createFlashcardCardDisplay(flashcardData) {
+        let card = $("<div />");
+        card.addClass("card");
+
+        let prompt = $("<p />");
+        prompt.html(flashcardData.lang1);
+        card.append(prompt);
+
+        let response = $("<p />");
+        response.html(flashcardData.lang2);
+        card.append(response);
+
+        let scoresDiv = $("<div />");
+        scoresDiv.addClass('scores-div')
+        scoresDiv.html(
+            "Score 1-2: " + 
+            dataManager.scoreToString(flashcardData.score12) + 
+            "<br>" +
+            "Score 2-1: " + 
+            dataManager.scoreToString(flashcardData.score21));
+        card.append(scoresDiv);
+
+        return card;
     }
 
     function setEventHandlers() {
@@ -96,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         $("#app-title").on("click", function () { location.href = 'https://offenwanger.ca'; })
 
         $("#settings-button").on("click", function () { showSettings() })
-        $("#close-settings-menu-button").on("click", function () { closeSettings(); })
+        $("#close-settings-menu-button").on("click", function () { hideSettings(); })
 
         $("#lang1-select").on("change", () => {
             speaker.setLang1($("#lang1-select").val())
@@ -116,7 +168,15 @@ document.addEventListener('DOMContentLoaded', function (e) {
             repeatClicked();
         });
 
-        $("#play-pause-button-pause").hide();
+        $("#add-flashcards").on("click", () => {
+
+        });
+
+        $("#view-flashcards").on("click", () => {
+            hideSettings();
+            showFlashcards(dataManager.getAllFlashcards());
+        });
+        $("#close-flashcard-display-button").on("click", function () { $("#flashcard-display").hide(); })
 
         $("#download-flashcards").on("click", () => {
             let text = dataManager.getTxtFile();
@@ -131,6 +191,10 @@ document.addEventListener('DOMContentLoaded', function (e) {
             a.click();
           
             document.body.removeChild(a);
+        });
+
+        $("#upload-data-input").on("change", (event) => {
+            fileUploaded(event);
         });
     }
 

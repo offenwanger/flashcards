@@ -43,15 +43,8 @@ body {
     cursor: pointer;
 }
 
-#download-flashcards {
-    width: 100%;
-}
-
-#upload-flashcards {
-    width: 100%;
-}
-
 .button-div {
+    width: 100%;
     display: inline-block;
     margin-bottom: 0;
     font-size: 14px;

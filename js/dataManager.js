@@ -103,13 +103,17 @@ let createDataManager = function() {
         localStorage.setItem(PARTIAL_KEY_FLASHCARD+card.id, JSON.stringify(card));
     }
 
-    function getRandomFlashCard() {
+    function getRandomFlashcard() {
         //skew this by score.
 
         let card = flashcards[getRandomInt(flashcards.length)];
         let is12 = getRandomBool();
 
         return {card, is12}
+    }
+
+    function getAllFlashcards() {
+        return [...flashcards];
     }
 
     function getRandomInt(max) {
@@ -288,9 +292,11 @@ let createDataManager = function() {
 
         getTxtFile,
         parseTxtFile,
-        getRandomFlashCard,
+        getRandomFlashcard,
+        getAllFlashcards,
         incrementScore,
         decrementScore,
+        scoreToString,
 
         clearData
     }
