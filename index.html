@@ -50,9 +50,29 @@
 
     <div id="flashcard-display" class="dialog">
         <div id="flashcard-display-modal" class="dialog-content">
-            <span id="close-flashcard-display-button" class="dialog-close">&times;</span>
+            <span class="dialog-close">&times;</span>
 
             <div id="cards-display-div"></div>
+        </div>
+    </div>
+
+    <div id="flashcard-input" class="dialog">
+        <div id="flashcard-input-close-button" class="dialog-content">
+            <span class="dialog-close">&times;</span>
+
+            <p>Enter new flashcards here in the format:</p>
+
+            <p style="font-family: monospace"><span translate="no">lang1: </span> Text in your language<br>
+                <span translate="no">lang2: </span> Text in the other language<br>
+                <br>
+                <span translate="no">lang1: </span> Second text in your language<br>
+                <span translate="no">lang2: </span> Second text in the other language</p>
+
+            <textarea id="story" name="story" rows="5" cols="33"></textarea>
+
+            <br><br>
+
+            <div class="button-div" id="submit-new-flashcards">Submit</div>
         </div>
     </div>
 </body>

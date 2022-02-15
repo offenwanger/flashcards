@@ -123,10 +123,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
         card.addClass("card");
 
         let prompt = $("<p />");
+        prompt.attr("translate", "no");
         prompt.html(flashcardData.lang1);
         card.append(prompt);
 
         let response = $("<p />");
+        response.attr("translate", "no");
         response.html(flashcardData.lang2);
         card.append(response);
 
@@ -144,11 +146,22 @@ document.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function setEventHandlers() {
+        $(".dialog").click(function (e) {
+            if (e.target == this) {
+                // only if the target itself has been clicked
+                $(this).hide();
+            }
+        });
+
+        $(".dialog-close").click(function (e) {
+            // if a dialog close gets clicked, close all dialogs. 
+            $(".dialog").hide();
+        });
+
         $("#logo").on("click", function () { location.href = 'https://offenwanger.ca'; })
         $("#app-title").on("click", function () { location.href = 'https://offenwanger.ca'; })
 
         $("#settings-button").on("click", function () { showSettings() })
-        $("#close-settings-menu-button").on("click", function () { hideSettings(); })
 
         $("#lang1-select").on("change", () => {
             speaker.setLang1($("#lang1-select").val())
@@ -169,7 +182,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
         });
 
         $("#add-flashcards").on("click", () => {
-
+            hideSettings();
+            $("#flashcard-input").show();
         });
 
         $("#view-flashcards").on("click", () => {
@@ -254,12 +268,14 @@ document.addEventListener('DOMContentLoaded', function (e) {
             card.addClass("card");
 
             let prompt = $("<p />");
+            prompt.attr("translate", "no");
             prompt.addClass('card-prompt');
             prompt.html(promptText);
             prompt.css('opacity', '0');
             card.append(prompt);
 
             let response = $("<p />");
+            response.attr("translate", "no");
             response.addClass('card-response');
             response.html(responseText);
             response.css('opacity', '0');
