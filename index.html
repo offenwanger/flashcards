@@ -51,13 +51,28 @@
     <div id="flashcard-display" class="dialog">
         <div id="flashcard-display-modal" class="dialog-content">
             <span class="dialog-close">&times;</span>
+            
+            <div id="display-current-cards-header" style="display: none;">Current flashcards</div>
+            <div id="add-cards-confirmation-header" style="display: none;">Add the following cards?</div>
+            <div id="overwrite-date-confirmation-header" style="display: none;">Set the flashcards to the following cards? <br> WARNING: This will overwrite your current data.</div>
 
             <div id="cards-display-div"></div>
+            <div id="cards-errors-display-div"></div>
+            <div id="add-cards-confirmation-controls" style="display: none;">
+                <br>
+                <div class="button-div" id="submit-new-flashcards-confirm-button">Confirm</div><br><br>
+                <div class="button-div" id="submit-new-flashcards-cancel-button">Cancel</div>
+            </div>
+            <div id="overwrite-date-confirmation-controls" style="display: none;">
+                <br>
+                <div class="button-div" id="upload-new-data-confirm-button">Confirm</div><br><br>
+                <div class="button-div" id="upload-new-data-cancel-button">Cancel</div>
+            </div>
         </div>
     </div>
 
     <div id="flashcard-input" class="dialog">
-        <div id="flashcard-input-close-button" class="dialog-content">
+        <div id="flashcard-input-modal" class="dialog-content">
             <span class="dialog-close">&times;</span>
 
             <p>Enter new flashcards here in the format:</p>
@@ -68,11 +83,21 @@
                 <span translate="no">lang1: </span> Second text in your language<br>
                 <span translate="no">lang2: </span> Second text in the other language</p>
 
-            <textarea id="story" name="story" rows="5" cols="33"></textarea>
+            <textarea id="flashcard-text-input" rows="5" cols="33"></textarea>
 
             <br><br>
 
             <div class="button-div" id="submit-new-flashcards">Submit</div>
+        </div>
+    </div>
+
+    <div id="message" class="dialog">
+        <div id="message-modal" class="dialog-content">
+            <span class="dialog-close">&times;</span>
+
+            <p id="message-div"></p>
+
+            <div class="button-div" id="message-ok">Ok</div>
         </div>
     </div>
 </body>

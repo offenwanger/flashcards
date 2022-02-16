@@ -10,17 +10,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
             return;
         }
 
-        if (!dataManager.isInitialized()) {
-            fetch('flashcardFile.txt')
-                .then(response => response.text())
-                .then(text => {
-                    dataManager.initialize(text);
-                    // wait for the init to finish then run this function again.
-                    speaker = createSpeaker(dataManager.getLang1(), dataManager.getLang2());
-                });
-        } else {
-            speaker = createSpeaker(dataManager.getLang1(), dataManager.getLang2());
-        }
+        speaker = createSpeaker(dataManager.getLang1(), dataManager.getLang2());
 
         setEventHandlers();
     }
@@ -30,8 +20,13 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
         if (!currPrompt || !currPrompt.responseHidden()) {
             // if we're on the first prompt or the response is showing, get a new card. 
-            // get a new card
-            currPrompt = new PromptCardWrapper(dataManager.getRandomFlashcard(), speaker, dataManager);
+            
+            let randomCard = dataManager.getRandomFlashcard();
+            if(randomCard == null) { 
+                displayMessageDialog("No Flashcards in the application. Please add some using the menu in the top righthand corner.")
+                return;
+            }
+            currPrompt = new PromptCardWrapper(randomCard, speaker, dataManager);
 
             $("#cards-div").append(currPrompt.element);
 
@@ -79,43 +74,110 @@ document.addEventListener('DOMContentLoaded', function (e) {
             l2.append($("<option />").val(voice.voiceURI).text(voice.name));
         })
 
-        if (dataManager.isInitialized()) {
-            l1.val(dataManager.getLang1());
-            l2.val(dataManager.getLang2());
-        }
-
+        l1.val(dataManager.getLang1());
+        l2.val(dataManager.getLang2());
+        
         $("#settings-menu").show();
-    }
-
-    function hideSettings() {
-        $("#settings-menu").hide();
     }
 
     function fileUploaded(event) {
         var input = event.target;
 
         var reader = new FileReader();
-        reader.onerror = function(event) {
+        reader.onerror = function (event) {
             alert("Failed to read file!\n\n" + reader.error);
         };
-        reader.onload = function(){
-          let text = reader.result;
-          let result = dataManager.parseTxtFile(text);
-          console.log(result);
+        reader.onload = function () {
+            let text = reader.result;
+            let result = dataManager.parseFlashcardText(text);
+
+            $("#settings-menu").hide();
+            displayOverwriteConfirmationDialog(result)
         };
         reader.readAsText(input.files[0]);
     }
 
-    function showFlashcards(flashcardData) {
-        let cardDisplay = $("#cards-display-div")
-        cardDisplay.empty();
+    function displayOverwriteConfirmationDialog(result) {
+        clearFlashcardDisplay();
 
-        flashcardData.forEach(flashcard=> {
-            let card = createFlashcardCardDisplay(flashcard);
-            cardDisplay.append(card);
+        result.cards.forEach(flashcard => {
+            $("#cards-display-div").append(createFlashcardCardDisplay(flashcard));
         });
 
+        result.errors.forEach(error => {
+            $("#cards-errors-display-div").append(createParseErrorDisplay(error));
+        });
+
+        $("#overwrite-date-confirmation-header").show();
+        $("#overwrite-date-confirmation-controls").show();
+
+        $("#upload-new-data-confirm-button").unbind('click');
+        $("#upload-new-data-confirm-button").on("click", () => {
+            $("#flashcard-display").hide();
+            dataManager.setFlashcards(result.cards);
+        })
+
         $("#flashcard-display").show();
+    }
+
+    function displayCurrentFlashcards() {
+        clearFlashcardDisplay();
+
+        dataManager.getAllFlashcards().forEach(flashcard=> {
+            let card = createFlashcardCardDisplay(flashcard);
+            
+            let deleteButton = $("<div />");
+            deleteButton.addClass("card-delete-button") 
+            deleteButton.html("<i class='fa fa-trash'>")
+            deleteButton.on("click", () => {
+                dataManager.deleteFlashcard(flashcard);
+                card.remove();
+            });
+            card.prepend(deleteButton)
+
+            $("#cards-display-div").append(card);
+        });
+
+        $("#display-current-cards-header").show();
+        $("#flashcard-display").show();
+    }
+
+    function displaySubmitFlashcardsConfirmationDialog() {
+        let text = $("#flashcard-text-input").val();
+        if(text.trim()) {
+            let result = dataManager.parseFlashcardText(text);
+            clearFlashcardDisplay();
+    
+            result.cards.forEach(flashcard => {
+                $("#cards-display-div").append(createFlashcardCardDisplay(flashcard));
+            });
+
+            result.errors.forEach(error => {
+                $("#cards-errors-display-div").append(createParseErrorDisplay(error));
+            });
+    
+            $("#add-cards-confirmation-header").show();
+            $("#add-cards-confirmation-controls").show();
+
+            $("#submit-new-flashcards-confirm-button").unbind('click');
+            $("#submit-new-flashcards-confirm-button").on("click", () => {
+                $("#flashcard-display").hide();
+                $("#flashcard-text-input").val("");
+                dataManager.addFlashcards(result.cards);
+            })
+
+            $("#flashcard-display").show();
+        }
+    }
+
+    function clearFlashcardDisplay() {
+        $("#add-cards-confirmation-header").hide();
+        $("#overwrite-date-confirmation-header").hide();
+        $("#display-current-cards-header").hide();
+        $("#cards-display-div").empty();
+        $("#cards-errors-display-div").empty()
+        $("#add-cards-confirmation-controls").hide();
+        $("#overwrite-date-confirmation-controls").hide();
     }
     
     function createFlashcardCardDisplay(flashcardData) {
@@ -145,6 +207,30 @@ document.addEventListener('DOMContentLoaded', function (e) {
         return card;
     }
 
+    function createParseErrorDisplay(error) {
+        let card = $("<div />");
+        card.addClass("card");
+        card.addClass("pink-background")
+
+        let errorMessage = $("<p />");
+        errorMessage.html(error[1]);
+        card.append(errorMessage);
+
+        let lines = $("<p />");
+        lines.attr("translate", "no");
+        lines.attr("style","font-family: monospace")
+        lines.html(error[0].replace("/n", "<br>"));
+        card.append(lines);
+
+        return card;
+    }
+
+    function displayMessageDialog(msg) {
+        $(".dialog").hide();
+        $("#message-div").html(msg);
+        $("#message").show();
+    }
+
     function setEventHandlers() {
         $(".dialog").click(function (e) {
             if (e.target == this) {
@@ -153,13 +239,24 @@ document.addEventListener('DOMContentLoaded', function (e) {
             }
         });
 
-        $(".dialog-close").click(function (e) {
+        $(".dialog-close").click((e) => {
             // if a dialog close gets clicked, close all dialogs. 
             $(".dialog").hide();
         });
 
-        $("#logo").on("click", function () { location.href = 'https://offenwanger.ca'; })
-        $("#app-title").on("click", function () { location.href = 'https://offenwanger.ca'; })
+        $("#message-ok").click((e) => { $(".dialog").hide(); });
+
+        $("#logo,#app-title").on("click", function () { 
+            displayMessageDialog(
+                `Thank you for using Flashcards. <br>
+                <br> 
+                Important notes about the application: All of your data is stored locally in cookies. 
+                If you are going to clear your cookies, make sure to download your flashcards using 
+                the menu in the top righthand corner to avoid losing your data.  <br>
+                <br> 
+                This application was developed independantly by Anna Offenwager. 
+                To learn more about the author, please visit <a href='https://offenwanger.ca'>offenwanger.ca</a>`)
+        });
 
         $("#settings-button").on("click", function () { showSettings() })
 
@@ -181,15 +278,26 @@ document.addEventListener('DOMContentLoaded', function (e) {
             repeatClicked();
         });
 
+        $("#view-flashcards").on("click", () => {
+            $("#settings-menu").hide();
+            displayCurrentFlashcards();
+        });
+
         $("#add-flashcards").on("click", () => {
-            hideSettings();
+            $("#settings-menu").hide();
             $("#flashcard-input").show();
         });
 
-        $("#view-flashcards").on("click", () => {
-            hideSettings();
-            showFlashcards(dataManager.getAllFlashcards());
-        });
+        $("#submit-new-flashcards").on("click", (event) => {
+            $("#flashcard-input").hide();
+            displaySubmitFlashcardsConfirmationDialog();
+        })
+
+        $("#submit-new-flashcards-cancel-button").on("click", () => {
+            $("#flashcard-display").hide();
+            $("#flashcard-input").show();
+        })
+
         $("#close-flashcard-display-button").on("click", function () { $("#flashcard-display").hide(); })
 
         $("#download-flashcards").on("click", () => {
@@ -210,6 +318,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
         $("#upload-data-input").on("change", (event) => {
             fileUploaded(event);
         });
+
+        $("#upload-new-data-cancel-button").on("click", () => {
+            $("#flashcard-display").hide();
+            $("#settings-menu").show();
+        })
+
     }
 
     function PromptCardWrapper(cardData, speaker, dataManager) {

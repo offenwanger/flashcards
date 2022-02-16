@@ -16,41 +16,13 @@ let Score = function(great = 0, good = 0, average = 0, bad = 0, terrible = 0) {
     }
 }
 
-
 let createDataManager = function() {
-    const KEY_INTIALIZED = "flash_cards_system_initialized";
     const KEY_LANG1 = "lang1Setting";
     const KEY_LANG2 = "lang2Setting";
     const PARTIAL_KEY_FLASHCARD = "flashcard"
 
-    let flashcards = [];
-
-    function isInitialized() {
-        return localStorage.getItem(KEY_INTIALIZED) == 'true';
-    }
-
-    function initialize(fileText) {
-        if(isInitialized()) throw error("Already initialized!");
-
-        localStorage.setItem(KEY_LANG1, DEFAULT_LANG1);
-        localStorage.setItem(KEY_LANG2, DEFAULT_LANG2);
-        localStorage.setItem(KEY_INTIALIZED, 'true');
-        setStateFromTxtFile(fileText);
-    }
-
-    function setStateFromTxtFile(fileText) {
-        let data = parseTxtFile(fileText);
-
-        flashcards.forEach(card => {
-            localStorage.removeItem(PARTIAL_KEY_FLASHCARD+card.id);
-        })
-
-        data.cards.forEach(card => {
-            localStorage.setItem(PARTIAL_KEY_FLASHCARD+card.id, JSON.stringify(card));
-        })
-
-        flashcards = getAllCards();
-    }
+    let flashcards;
+    let nextCardId = 0;
 
     function getLang1() {
         return localStorage.getItem(KEY_LANG1);
@@ -82,6 +54,32 @@ let createDataManager = function() {
         });
         return cards
     }
+    flashcards = getAllCards();
+    nextCardId = Math.max(...flashcards.map(card => card.id), -1) + 1;
+
+    function addFlashcards(cardArr) {
+        cardArr.forEach(card => {
+            flashcards.push(card);
+            setCard(card);
+        })
+    }
+
+    function setFlashcards(cardArr) {
+        flashcards.forEach(card => {
+            deleteFlashcard(card);
+        })
+
+        cardArr.forEach(card => {
+            setCard(card);
+        })
+
+        flashcards = getAllCards();
+    }
+
+    function deleteFlashcard(card) {
+        localStorage.removeItem(PARTIAL_KEY_FLASHCARD+card.id);
+        flashcards = getAllCards();
+    }
     
     function incrementScore(cardId, scoreIndex, is12) {
         if(typeof scoreIndex != 'number' || scoreIndex % 1 !== 0 || scoreIndex < 0 || scoreIndex > 4) {console.error("Bad Index! "+scoreIndex);return;}
@@ -104,8 +102,11 @@ let createDataManager = function() {
     }
 
     function getRandomFlashcard() {
-        //skew this by score.
+        if(flashcards.length == 0) {
+            return null;
+        }
 
+        //TODO: skew this by score.
         let card = flashcards[getRandomInt(flashcards.length)];
         let is12 = getRandomBool();
 
@@ -147,7 +148,7 @@ let createDataManager = function() {
      *     cards: An array of the flashcards extracted with their scores
      *     errors: an array of tupes, [line, error]
      */
-    function parseTxtFile(txtString) {
+    function parseFlashcardText(txtString) {
         let lines = txtString.split(/\r?\n/);
         // strip excess whitespace
         lines = lines.map(line => line.trim());
@@ -157,23 +158,22 @@ let createDataManager = function() {
         // remove comments
         lines=  lines.filter(line =>  line[0] != "*");
 
-        let cardId = 0
         let cards = []
         let errors = []
 
-        let currCard = new Flashcard(cardId++);
+        let currCard = new Flashcard(nextCardId++);
         let cardLines = []
 
         function finalizeCurrCard() {
             if(!currCard.lang1) {
-                errors.push([cardLines.join["\n"], "Error: Language 1 missing."])
+                errors.push([cardLines.join("\n"), "Error: Language 1 missing."])
             } else if(!currCard.lang2) {
-                errors.push([cardLines.join["\n"], "Error: Language 2 missing."])
+                errors.push([cardLines.join("\n"), "Error: Language 2 missing."])
             } else {
                 cards.push(currCard);
             }
 
-            currCard = new Flashcard(cardId++);
+            currCard = new Flashcard(nextCardId++);
             cardLines = []
         }
 
@@ -213,8 +213,10 @@ let createDataManager = function() {
             } else {
                 errors.push([line, "Error: Tag not recognised: "+ tag])
             }
-        
         }
+
+        // finalize the last card on the docket.
+        finalizeCurrCard();
 
         return {cards, errors}
 
@@ -272,28 +274,25 @@ let createDataManager = function() {
         return new Score(...scores);
     }
 
-    if(isInitialized()) {
-        flashcards = getAllCards();
-    }
-
     function clearData() {
         localStorage.clear();
     }
 
-    return {
-        isInitialized,
-        initialize,
-        setStateFromTxtFile,
-        
+    return {        
         getLang1,
         setLang1,
         getLang2,
         setLang2,
 
         getTxtFile,
-        parseTxtFile,
+        parseFlashcardText,
+
+        addFlashcards,
+        setFlashcards,
+        deleteFlashcard,
         getRandomFlashcard,
         getAllFlashcards,
+        
         incrementScore,
         decrementScore,
         scoreToString,
