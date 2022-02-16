@@ -106,11 +106,54 @@ let createDataManager = function() {
             return null;
         }
 
-        //TODO: skew this by score.
-        let card = flashcards[getRandomInt(flashcards.length)];
-        let is12 = getRandomBool();
+        let value = getRandomInt(getTotalValue());
+        let sum = 0;
 
-        return {card, is12}
+        for(let i = 0; i<flashcards.length;i++) {
+            console.log(value, sum, getTotalValue())
+            let card = flashcards[i];
+            sum += getScoreValue(card.score12);
+            if(value < sum) {
+                let is12 = true;
+                return {card, is12}
+            }
+
+            sum += getScoreValue(card.score21);
+            if(value < sum) {
+                let is12 = false;
+                return {card, is12}
+            }
+        }
+
+        console.error("Card not selected, shouled have returned by now! ")
+        
+        return {
+            card: flashcards[getRandomInt(flashcards.length)], 
+            is12: getRandomBool()
+        }
+    }
+
+    function getTotalValue() {
+        return flashcards.reduce((score, card) => {
+            score += getScoreValue(card.score12)
+            score += getScoreValue(card.score21)
+
+            return score;
+        }, 0);
+    }
+
+    function getScoreValue(score) {
+        let val = 30;
+        // add terrible minus great times three
+        val += (score.scores[4] - score.scores[0]) * 3
+        // add bad minus good
+        val += score.scores[3] - score.scores[1]
+
+        // value cannot be greater than 1 or less than 100
+        val = Math.max(1, val);
+        val = Math.min(100, val);
+
+        return val;
     }
 
     function getAllFlashcards() {
