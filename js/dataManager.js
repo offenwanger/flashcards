@@ -225,15 +225,15 @@ let createDataManager = function() {
             // split off on the first space, then strip the : if it's there. 
             let tag = line.split(" ")[0].split(":")[0];
             
-            if(tag == LANG1_TAG) {
+            if(tag.toLowerCase() == LANG1_TAG) {
                 if(currCard.lang1) finalizeCurrCard();
                 currCard.lang1 = stripTag(line, tag);
                 cardLines.push(line)
-            } else if (tag == LANG2_TAG) {
+            } else if (tag.toLowerCase() == LANG2_TAG) {
                 if(currCard.lang2) finalizeCurrCard();
                 currCard.lang2 = stripTag(line, tag);
                 cardLines.push(line)
-            } else if (tag == SCORE_LANG1_TO_LANG2_TAG) {
+            } else if (tag.toLowerCase() == SCORE_LANG1_TO_LANG2_TAG) {
                 if(currCard.score12.isZero()) {
                     try {
                         currCard.score12 = parseScoreFromString(stripTag(line, tag))
@@ -243,7 +243,7 @@ let createDataManager = function() {
                 } else {
                     errors.push([cardLines.concat([line]).join("\n"), "Error: double "+SCORE_LANG1_TO_LANG2_TAG+"."])
                 }
-            } else if (tag == SCORE_LANG2_TO_LANG1_TAG) {
+            } else if (tag.toLowerCase() == SCORE_LANG2_TO_LANG1_TAG) {
                 if(currCard.score21.isZero()) {
                     try {
                         currCard.score21 = parseScoreFromString(stripTag(line, tag))
