@@ -35,14 +35,14 @@
             <br><br>
             <label for="lang2-select">lang2: </label><select id="lang2-select"></select>
             <br><br>
-            <div class="button-div" id="view-flashcards">View Flashcards</div>
+            <div class="button-div" id="view-flashcards"><i class="fa fa-eye"></i> View Flashcards</div>
             <br><br>
-            <div class="button-div" id="add-flashcards">Add Flashcards</div>
+            <div class="button-div" id="add-flashcards"><i class="fa fa-plus"></i> Add Flashcards</div>
             <br><br>
-            <div class="button-div" id="download-flashcards">Download Flashcards</div>
+            <div class="button-div" id="download-flashcards"><i class="fa fa-download"></i> Download Flashcards</div>
             <br><br>
             <label>
-                <div class="button-div" id="upload-flashcards">Upload Flashcards</div>
+                <div class="button-div" id="upload-flashcards"><i class="fa fa-upload"></i> Upload Flashcards</div>
                 <input id="upload-data-input" style="display:none" type="file"/>
             </label>
         </div>
@@ -60,13 +60,13 @@
             <div id="cards-errors-display-div"></div>
             <div id="add-cards-confirmation-controls" style="display: none;">
                 <br>
-                <div class="button-div" id="submit-new-flashcards-confirm-button">Confirm</div><br><br>
-                <div class="button-div" id="submit-new-flashcards-cancel-button">Cancel</div>
+                <div class="button-div" id="submit-new-flashcards-confirm-button"><i class="fa fa-check"></i> Confirm</div><br><br>
+                <div class="button-div" id="submit-new-flashcards-cancel-button"><i class="fa fa-times"></i> Cancel</div>
             </div>
             <div id="overwrite-date-confirmation-controls" style="display: none;">
                 <br>
-                <div class="button-div" id="upload-new-data-confirm-button">Confirm</div><br><br>
-                <div class="button-div" id="upload-new-data-cancel-button">Cancel</div>
+                <div class="button-div" id="upload-new-data-confirm-button"><i class="fa fa-check"></i> Confirm</div><br><br>
+                <div class="button-div" id="upload-new-data-cancel-button"><i class="fa fa-times"></i> Cancel</div>
             </div>
         </div>
     </div>
@@ -87,7 +87,7 @@
 
             <br><br>
 
-            <div class="button-div" id="submit-new-flashcards">Submit</div>
+            <div class="button-div" id="submit-new-flashcards"><i class="fa fa-check"></i> Submit</div>
         </div>
     </div>
 
@@ -97,7 +97,48 @@
 
             <p id="message-div"></p>
 
-            <div class="button-div" id="message-ok">Ok</div>
+            <div class="button-div message-ok">Ok</div>
+        </div>
+    </div>
+
+    <div id="about" class="dialog">
+        <div id="about-modal" class="dialog-content">
+            <span class="dialog-close">&times;</span>
+
+            <h2>About this Application</h2>
+
+            <h3>How it works</h3>
+            To use the flashcards program, open the menu in the top right corner (<i class="fa fa-cog"></i>) 
+            and select your languages. The available langues are the synthesized voices available in your browser. 
+            The system will use the synthesized voices to read your flashcards. Leave these options blank if you wish 
+            the application to remain silent. 
+            <br><br>
+            Next, add some flashcards using the add flashcards option in the menu (<i class="fa fa-plus"></i> Add Flashcards).
+            <br><br>
+            To use the application, press the play button (<i class="fa fa-play"></i>). This will randomly choose a flashcard, 
+            and read out the prompt to you (it randomly selects which language to read). Press play again 
+            to see the text for what was read. Click play one final time to see the text for the response, which will also
+            be read. 
+            <br><br>
+            You can then give yourself a score based on how well you did. The 😀 and 🙂 scores mean you are doing well 
+            at this flashcard, so it will appear less often. The 🙁 and 😖 mean that you need more practice, so the card
+            will appear more often. The 😐, or selecting no score, will not change how often the card appears.
+
+            <h3>Important!</h3>
+            All of your flashcards and scores are stored on your device in cookies. If you clear your cookies, all your
+            data will be lost. Please make sure to download your flashcards (<i class="fa fa-download"></i> Download Flashcards) 
+            and store the text file somewhere safe before you clear your cookies. Then you can upload it 
+            (<i class="fa fa-upload"></i> Upload Flashcards) when you're done, and continue from where you left off. 
+
+            <h3> About the Author </h3>
+            I developed this application independantly because I wanted a simply flashcard program that would help me 
+            with both memorization and pronounciation. I have released this application free for other language students
+            to also benifit. If you'd like to learn more about me and my various projects, please visit 
+            <a href='https://offenwanger.ca'>offenwanger.ca</a>
+            <br><br>
+            If you have any feedback on the app, please fire me an email at dev@offenwanger.ca.
+            <br><br>
+            <div class="button-div message-ok">Ok</div>
         </div>
     </div>
 </body>

@@ -244,18 +244,11 @@ document.addEventListener('DOMContentLoaded', function (e) {
             $(".dialog").hide();
         });
 
-        $("#message-ok").click((e) => { $(".dialog").hide(); });
+        $(".message-ok").click((e) => { $(".dialog").hide(); });
 
         $("#logo,#app-title").on("click", function () { 
-            displayMessageDialog(
-                `Thank you for using Flashcards. <br>
-                <br> 
-                Important notes about the application: All of your data is stored locally in cookies. 
-                If you are going to clear your cookies, make sure to download your flashcards using 
-                the menu in the top righthand corner to avoid losing your data.  <br>
-                <br> 
-                This application was developed independantly by Anna Offenwager. 
-                To learn more about the author, please visit <a href='https://offenwanger.ca'>offenwanger.ca</a>`)
+            $(".dialog").hide();
+            $("#about").show();
         });
 
         $("#settings-button").on("click", function () { showSettings() })
