@@ -144,14 +144,12 @@ let createDataManager = function() {
 
     function getScoreValue(score) {
         let val = 30;
-        // add terrible minus great times three
-        val += (score.scores[4] - score.scores[0]) * 3
-        // add bad minus good
-        val += score.scores[3] - score.scores[1]
+        // add terrible times five, bad times two, and minus great times three and good times one
+        val += score.scores[4] * 5 + score.scores[3] * 2 - score.scores[0] * 3  - score.scores[1]
 
         // value cannot be greater than 1 or less than 100
         val = Math.max(1, val);
-        val = Math.min(100, val);
+        val = Math.min(50, val);
 
         return val;
     }
