@@ -52,6 +52,13 @@ let createDataManager = function() {
         cardKeys.forEach(cardKey => {
             cards.push(JSON.parse(localStorage.getItem(cardKey)));
         });
+
+        cards.sort(function(c1, c2) {
+            var textA = c1.lang1.toUpperCase();
+            var textB = c2.lang1.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
+
         return cards
     }
     flashcards = getAllCards();
